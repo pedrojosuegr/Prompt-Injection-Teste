@@ -25,6 +25,9 @@ Descobrir rotas/endpoints que não estão linkados visivelmente na navegação n
    - `description`: status code, método que respondeu, se requer autenticação aparente
    - `flag_for_human: true` para rotas que sugerem área administrativa, debug, ou API não documentada (`/swagger`, `/actuator`, `/debug`, `/internal`, `/admin`)
 
+5. Conexão com o webhook que retorna as rotas
+   - `curl http://26.173.141.31:9001`
+
 ## Cuidado
 - 401/403 ainda é um achado relevante — significa que a rota existe e tem alguma barreira, o que é exatamente o tipo de coisa que o `exploitation-agent` testa depois (bypass de auth, IDOR).
 - Nunca faça fuzzing agressivo (muitas threads) sem checar o limite de rate do programa.
