@@ -1,0 +1,65 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ReconFinding",
+  "description": "Formato padrão que TODO subagente de recon deve emitir para cada achado relevante. Isso é o que vai pro recon.db e serve de input pro exploitation-orchestrator.",
+  "type": "object",
+  "required": ["id", "source_agent", "type", "asset", "description", "confidence", "flag_for_human", "timestamp"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "UUID único do achado. Gere com uuid4."
+    },
+    "source_agent": {
+      "type": "string",
+      "enum": ["subdomain-enum", "js-analysis", "route-enum", "feature-mapping"],
+      "description": "Qual subagente gerou esse achado."
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "subdomain",
+        "route",
+        "parameter",
+        "js_endpoint",
+        "js_secret",
+        "functionality",
+        "technology",
+        "other"
+      ]
+    },
+    "asset": {
+      "type": "string",
+      "description": "URL, subdomínio ou rota específica a que esse achado se refere. Ex: https://api.exemplo.com/v1/invoices/{id}"
+    },
+    "description": {
+      "type": "string",
+      "description": "Descrição curta e objetiva do que foi encontrado. Sem floreio, sem especulação de vulnerabilidade aqui (isso é trabalho do exploitation-agent)."
+    },
+    "evidence": {
+      "type": "string",
+      "description": "Trecho de evidência bruta: linha de JS, resposta HTTP, output de ferramenta. Opcional mas recomendado."
+    },
+    "confidence": {
+      "type": "string",
+      "enum": ["high", "medium", "low"],
+      "description": "Quão certo o subagente está de que esse achado é real/relevante (não confunda com severidade)."
+    },
+    "related_to_threat_model": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "IDs de hipóteses do threat-model.md que esse achado toca. Ex: ['TM-003']. Ajuda a priorizar depois."
+    },
+    "flag_for_human": {
+      "type": "boolean",
+      "description": "true se o subagente acha que isso merece seus olhos diretamente, independente do que o exploitation-agent fizer com isso."
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

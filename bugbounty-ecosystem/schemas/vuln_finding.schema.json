@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "VulnFinding",
+  "description": "Formato padrão que TODO subagente de exploitation deve emitir. Fica em findings.db. NUNCA marque como 'validated' automaticamente — isso é sempre decisão humana.",
+  "type": "object",
+  "required": [
+    "id", "source_agent", "vuln_class", "asset", "description",
+    "recon_finding_ids", "severity_estimate", "status", "timestamp"
+  ],
+  "properties": {
+    "id": { "type": "string", "description": "UUID único." },
+    "source_agent": {
+      "type": "string",
+      "enum": ["xss-hunter", "idor-hunter", "ssrf-hunter"]
+    },
+    "vuln_class": {
+      "type": "string",
+      "description": "Ex: 'Reflected XSS', 'IDOR - Horizontal', 'SSRF via webhook URL'. Use nomenclatura CWE/OWASP quando possível."
+    },
+    "asset": {
+      "type": "string",
+      "description": "Endpoint/rota exato onde foi testado."
+    },
+    "description": {
+      "type": "string",
+      "description": "O que foi testado e o que foi observado. Factual, sem exagerar impacto."
+    },
+    "recon_finding_ids": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "IDs dos recon_findings que originaram esse teste. Rastreabilidade é obrigatória."
+    },
+    "payload_used": {
+      "type": "string",
+      "description": "Payload/request exato usado no teste, para reprodução."
+    },
+    "evidence": {
+      "type": "string",
+      "description": "Resposta do servidor, screenshot path, ou outra evidência bruta."
+    },
+    "severity_estimate": {
+      "type": "string",
+      "enum": ["critical", "high", "medium", "low", "info"],
+      "description": "Estimativa do agente. Será revisada por você antes do report final."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["candidate", "needs_manual_validation", "validated", "false_positive", "duplicate", "reported"],
+      "default": "needs_manual_validation",
+      "description": "TODO finding novo nasce como 'needs_manual_validation'. Só você muda pra 'validated'."
+    },
+    "validation_notes": {
+      "type": "string",
+      "description": "Suas anotações de quando validou manualmente (ou descartou)."
+    },
+    "timestamp": { "type": "string", "format": "date-time" }
+  }
+}
